@@ -39,4 +39,39 @@ class Proveedores:
         self.correo=correo
         self.id_categoria=id_categoria
 
+class Ventas:
+    def __init__(self,id_venta,fecha,nit,id_empleado,total):
+        self.id_venta=id_venta
+        self.fecha=fecha
+        self.nit=nit
+        self.id_empleado=id_empleado
+        self.total=total
+
+class DetalleVenta:
+    def __init__(self,id_detallaVenta,id_venta,cantidaad,id_producto,precio,subtotal):
+        self.id_detalleVenta=id_detallaVenta
+        self.id_venta=id_venta
+        self.cantidad=cantidaad
+        self.id_producto=id_producto
+        self.precio=precio
+        self.subtotal=subtotal
+
+class Compras:
+    def __init__(self,id_comparas,fecha,id_proveedor,id_empleado,total):
+        self.id_compras=id_comparas
+        self.fecha=fecha
+        self.id_proveedor=id_proveedor
+        self.id_empleado=id_empleado
+        self.total=total
+
+class DetalleCompras:
+    def __init__(self,id_detalleCompra,id_compras,cantidad,id_producto,precioCompra,subtotal,fechaCaducidad):
+        self.id_detalleCompra=id_detalleCompra
+        self.id_compras=id_compras
+        self.cantidad=cantidad
+        self.id_producto=id_producto
+        self.pecioComra=precioCompra
+        self.subtotal=subtotal
+        self.fechaCaducidad=fechaCaducidad
+
 
