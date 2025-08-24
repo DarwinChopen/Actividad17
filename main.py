@@ -123,19 +123,18 @@ class GestionTienda:
                             break
                     while True:
                         nombre = input("Ingrese el Nombre del Producto:           ")
-                        if nombre in self.productos:  # Validacion por nombre check
+                        if nombre in self.productos:
                             print("Este Nombre en especifico ya existe, ingrese otro:")
                         elif nombre == "":
                             print("Este Campo no puede quedar vacio, Ingrese el nombre")
                         else:
                             break
                     while True:
-                        id_categoria = input("Ingrese La Categoria del Producto:        ")
-
-                        if id_categoria not in categorias:
-
-                        if categoria == "":
-                            print("Este campo no puede quedar vacio, Ingrese la categoria")
+                        id_categoria = input("Ingrese el código de la categoría: ")
+                        if id_categoria not in self.categorias:
+                            print("La categoría no existe, primero regístrela.")
+                        elif id_categoria == "":
+                            print("El campo no puede estar vacío.")
                         else:
                             break
                     while True:
@@ -221,6 +220,19 @@ class GestionTienda:
             except Exception as e:
                 print(f'Por favor ingrese datos validos, ocurrio {e}')
 
+    def listar_categorias(self):
+        if not self.categorias:
+            print("No hay categorías.")
+        for c in self.categorias.values():
+            print(f"[{c.id_categoria}] {c.nombre}")
+
+    def listar_productos(self):
+        if not self.productos:
+            print("No hay productos.")
+        for p in self.productos.values():
+            cat = self.categorias[p.id_categoria]
+            print(f"[{p.id_producto}] {p.nombre} | Precio: {p.precio} | Categoría: {cat.nombre} | Stock: {p.stock}")
+
 registro = GestionTienda()
 while True:
     print("Menu")
@@ -229,8 +241,9 @@ while True:
     print("3. Ingresar Clientes")
     print("4. Ingresar Empleados")
     print("5. Ingresar Proveedores")
-
-    print("6. Salir")
+    print("6. Listar Productos")
+    print("7. Listar Categorias")
+    print("8. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -240,7 +253,7 @@ while True:
             print("Inpreso Productos")
             registro.ingreso_producto()
         case 2:
-            registro.
+            registro.ingreso_categotia()
         case 3:
             pass
         case 4:
@@ -248,6 +261,10 @@ while True:
         case 5:
             pass
         case 6:
+            registro.listar_productos()
+        case 7:
+            registro.listar_categorias()
+        case 8:
             print("Saliendo")
             break
         case _:
