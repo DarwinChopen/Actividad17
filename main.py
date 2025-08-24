@@ -220,6 +220,62 @@ class GestionTienda:
             except Exception as e:
                 print(f'Por favor ingrese datos validos, ocurrio {e}')
 
+    def ingreso_clientes(self):
+        cantidad_clientes = int(input('¿Cuantos clientes desea ingresar al inventario?:     '))
+        for i in range(cantidad_clientes):
+            print(f'\t\t\t\tIngreso datos de {i + 1} clientes: ')
+            while True:
+                nit = input("Ingrese el nit del cliente:           ")
+                if nit in self.clientes:
+                    print("Este nit Ya existe, Intentelo de nuevo...")
+                elif nit == "":
+                    print("El codigo no puede estar vacio, Intentelo de nuevo... ")
+                else:
+                    break
+            while True:
+                nombre_cliente = input("Ingrese el Nombre del cliente:           ")
+                if nombre_cliente in self.clientes:
+                    print("Este Nombre en especifico ya existe, ingrese otro:")
+                elif nombre_cliente == "":
+                    print("Este Campo no puede quedar vacio, Ingrese el nombre del cliente")
+                else:
+                    break
+            while True:
+                try:
+                    telefono_cliente = int(input("Ingrese el numero del cliente:   "))#Falta validacion
+                    if telefono_cliente in self.clientes:
+                        print("Este Telefono ya esta en uso, Intente con otro")
+                    elif telefono_cliente=="":
+                        print("Este campo no Puede quedar vacio, Ingrese el Dato")
+
+                    elif telefono_cliente<0:
+                        print("El telefono no tiene sentido jaja")
+                    else:
+                        break
+                except ValueError:
+                    print("Solo se permiten numeros")
+            while True:
+                direccion_cliente=input("Ingrese la direccion del cliente:         ")
+                if direccion_cliente in self.clientes:
+                    print("Esta direccion ya esta en uso")
+                elif direccion_cliente=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            while True:
+                correo_cliente=input("Ingrese el correo del cliente:         ")
+                if correo_cliente in self.clientes:
+                    print("Este correo ya esta en uso")
+                elif correo_cliente=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            self.clientes[nit]=Clientes(nit,nombre_cliente,telefono_cliente,direccion_cliente,correo_cliente)
+            print("El cliente se agrego Correctamente...")
+
+
+
+
     def listar_categorias(self):
         if not self.categorias:
             print("No hay categorías.")
@@ -233,6 +289,13 @@ class GestionTienda:
             cat = self.categorias[p.id_categoria]
             print(f"[{p.id_producto}] {p.nombre} | Precio: {p.precio} | Categoría: {cat.nombre} | Stock: {p.stock}")
 
+    def listar_Clientes(self):
+        if not self.clientes:
+            print("No hay Clientes")
+        for cl in self.clientes.values():
+            print(f"[{cl.nit}] {cl.nombre}  | Telefono : {cl.telefono} | Direccion: {cl.direccion} | correo: {cl.correo}")
+
+
 registro = GestionTienda()
 while True:
     print("Menu")
@@ -243,7 +306,8 @@ while True:
     print("5. Ingresar Proveedores")
     print("6. Listar Productos")
     print("7. Listar Categorias")
-    print("8. Salir")
+    print("8, Listar Clientes")
+    print("9. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -255,7 +319,7 @@ while True:
         case 2:
             registro.ingreso_categotia()
         case 3:
-            pass
+            registro.ingreso_clientes()
         case 4:
             pass
         case 5:
@@ -265,6 +329,8 @@ while True:
         case 7:
             registro.listar_categorias()
         case 8:
+            registro.listar_Clientes()
+        case 9:
             print("Saliendo")
             break
         case _:
