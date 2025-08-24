@@ -242,7 +242,7 @@ class GestionTienda:
                     break
             while True:
                 try:
-                    telefono_cliente = int(input("Ingrese el numero del cliente:   "))#Falta validacion
+                    telefono_cliente = int(input("Ingrese el numero del cliente:   "))
                     if telefono_cliente in self.clientes:
                         print("Este Telefono ya esta en uso, Intente con otro")
                     elif telefono_cliente=="":
@@ -273,8 +273,58 @@ class GestionTienda:
             self.clientes[nit]=Clientes(nit,nombre_cliente,telefono_cliente,direccion_cliente,correo_cliente)
             print("El cliente se agrego Correctamente...")
 
+    def ingreso_empleados(self):
+        cantidad_empleados = int(input('¿Cuantos empleados desea ingresar?:     '))
+        for i in range(cantidad_empleados):
+            print(f'\t\t\t\tIngreso datos de {i + 1} empleado: ')
+            while True:
+                id_empleado = input("Ingrese el codigo de Empledo:           ")
+                if id_empleado in self.empleadoss:
+                    print("Este id Ya existe, Intentelo de nuevo...")
+                elif id_empleado == "":
+                    print("El codigo no puede estar vacio, Intentelo de nuevo... ")
+                else:
+                    break
+            while True:
+                nombre_empleado = input("Ingrese el Nombre del empleado:           ")
+                if nombre_empleado in self.empleadoss:
+                    print("Este Nombre en especifico ya existe, ingrese otro:")
+                elif nombre_empleado == "":
+                    print("Este Campo no puede quedar vacio, Ingrese el nombre del empleado")
+                else:
+                    break
+            while True:
+                try:
+                    telefono_empleado = int(input("Ingrese el telefono del empleado:   "))
+                    if telefono_empleado in self.empleadoss:
+                        print("Este Telefono ya esta en uso, Intente con otro")
+                    elif telefono_empleado=="":
+                        print("Este campo no Puede quedar vacio, Ingrese el Dato")
 
-
+                    elif telefono_empleado<0:
+                        print("El telefono no tiene sentido jaja")
+                    else:
+                        break
+                except ValueError:
+                    print("Solo se permiten numeros")
+            while True:
+                direccion_empleado=input("Ingrese la direccion del empleado:         ")
+                if direccion_empleado in self.empleadoss:
+                    print("Esta direccion ya esta en uso")
+                elif direccion_empleado=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            while True:
+                correo_empleado=input("Ingrese el correo del empleado:         ")
+                if correo_empleado in self.empleadoss:
+                    print("Este correo ya esta en uso")
+                elif correo_empleado=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            self.empleadoss[id_empleado]=Empleados(id_empleado,nombre_empleado,telefono_empleado,direccion_empleado,correo_empleado)
+            print("El Empleado se agrego Correctamente...")
 
     def listar_categorias(self):
         if not self.categorias:
@@ -289,11 +339,17 @@ class GestionTienda:
             cat = self.categorias[p.id_categoria]
             print(f"[{p.id_producto}] {p.nombre} | Precio: {p.precio} | Categoría: {cat.nombre} | Stock: {p.stock}")
 
-    def listar_Clientes(self):
+    def listar_clientes(self):
         if not self.clientes:
             print("No hay Clientes")
         for cl in self.clientes.values():
             print(f"[{cl.nit}] {cl.nombre}  | Telefono : {cl.telefono} | Direccion: {cl.direccion} | correo: {cl.correo}")
+
+    def listar_empleados(self):
+        if not self.empleadoss:
+            print("No hay emleados")
+        for em in self.empleadoss.values():
+            print(f"[{em.id_empleado}] {em.nombre}  | Telefono : {em.telefono} | Direccion: {em.direccion} | correo: {em.correo}")
 
 
 registro = GestionTienda()
@@ -307,7 +363,8 @@ while True:
     print("6. Listar Productos")
     print("7. Listar Categorias")
     print("8, Listar Clientes")
-    print("9. Salir")
+    print("9. Listar Empleados")
+    print("10. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -321,7 +378,7 @@ while True:
         case 3:
             registro.ingreso_clientes()
         case 4:
-            pass
+            registro.ingreso_empleados()
         case 5:
             pass
         case 6:
@@ -329,8 +386,10 @@ while True:
         case 7:
             registro.listar_categorias()
         case 8:
-            registro.listar_Clientes()
+            registro.listar_clientes()
         case 9:
+            registro.listar_empleados()
+        case 10:
             print("Saliendo")
             break
         case _:
