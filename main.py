@@ -395,7 +395,7 @@ class GestionTienda:
             self.proveedores[id_proveedor]=Proveedores(id_proveedor,nombre_proveedor,empresa_proveedor,telefono_provedor,direccion_provedor,correo_provedor,id_categoria)
             print("El Proveedor se agrego Correctamente...")
 
-    def regitrar_venta(self):
+    def regitrar_venta(self):#aun no funciona necesita el detalle de venta, error en el total
         while True:
             id_venta=input("Ingrese el codigo de la venta: ")
             if id_venta in self.ventas:
@@ -421,14 +421,33 @@ class GestionTienda:
                 break
         self.ventas[id_venta]=Ventas(id_venta,fecha_venta,id_cliente,id_empleado)
         print("Venta Registrada")
+    def registrar_compras(self):#aun no funciona, decesita el detalle de compra
+        while True:
+            id_compra=input("Ingrese el codigo de la compra: ")
+            if id_compra in self.compras:
+                print("Este codigo ya existe,registre otro: ")
+            elif id_compra=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
 
+        fecha_compra= datetime.datetime.now()
 
+        while True:
+            id_proveedor=input("Ingrese el codigo del proveedor: ")
+            if id_proveedor=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
+        while True:
+            id_empleado=input("Ingrese el codigo del empleado: ")
+            if id_empleado=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
 
-
-
-
-
-
+        self.compras[id_compra]=Ventas(id_compra,fecha_compra,id_proveedor,id_empleado)
+        print("compra Registrada")
 
     def listar_categorias(self):
         if not self.categorias:
@@ -469,9 +488,15 @@ class GestionTienda:
                 for v in self.ventas.values():
                     cliente = self.clientes[v.id_cliente]
                     empleado= self.empleadoss[v.id_empleado]
-                    print(f"[{v.id_venta}] Fecha: {v.fecha} | Cliente: {cliente.nombre} | Cliente: {empleado.nombre} | Total: {v.total}")
-
-
+                    print(f"[{v.id_venta}] Fecha: {v.fecha} | Cliente: {cliente.nombre} | Empleado: {empleado.nombre} | Total: {v.total}")
+    def listar_compras(self):
+            if not self.compras:
+                print("No hay compras.")
+            else:
+                for comp in self.compras.values():
+                    provedor = self.compras[comp.id_proveedores]
+                    empleado= self.empleadoss[comp.id_empleado]
+                    print(f"[{comp.id_venta}] Fecha: {comp.fecha} | Proveedor: {provedor.nombre} | Empleaod: {empleado.nombre} | Total: {comp.total}")
 registro = GestionTienda()
 while True:
     print("Menu")
@@ -481,12 +506,14 @@ while True:
     print("4. Ingresar Empleados")
     print("5. Ingresar Proveedores")
     print("6. Ingresar una venta")
+    print("Ingresar una compra")
     print("7. Listar Productos")
     print("8. Listar Categorias")
     print("9, Listar Clientes")
     print("10. Listar Empleados")
     print("11. Listar Proveedores")
     print("12. Listar Ventas")
+    print("Litar una compra")
     print("13. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
@@ -519,6 +546,10 @@ while True:
         case 12:
             registro.listar_ventas()
         case 13:
+            registro.registrar_compras()
+        case 14:
+            registro.listar_compras()
+        case 15:
             print("Saliendo")
             break
         case _:
