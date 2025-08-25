@@ -325,6 +325,75 @@ class GestionTienda:
                     break
             self.empleadoss[id_empleado]=Empleados(id_empleado,nombre_empleado,telefono_empleado,direccion_empleado,correo_empleado)
             print("El Empleado se agrego Correctamente...")
+    def ingreso_proverdores(self):#falta validaciones
+        cantidad_proveedores = int(input('¿Cuantos proveedores desea ingresar?:     '))
+        for i in range(cantidad_proveedores):
+            print(f'\t\t\t\tIngreso datos de {i + 1} preveedor: ')
+            while True:
+                id_proveedor = input("Ingrese el codigo de proveedor:           ")
+                if id_proveedor in self.proveedores:
+                    print("Este id Ya existe, Intentelo de nuevo...")
+                elif id_proveedor == "":
+                    print("El codigo no puede estar vacio, Intentelo de nuevo... ")
+                else:
+                    break
+            while True:
+                nombre_proveedor = input("Ingrese el Nombre del proveedor:           ")
+                if nombre_proveedor in self.proveedores:
+                    print("Este Nombre en especifico ya existe, ingrese otro:")
+                elif nombre_proveedor == "":
+                    print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
+                else:
+                    break
+            while True:
+                empresa_proveedor = input("Ingrese la empresa del proveedor:           ")
+                if empresa_proveedor in self.proveedores:
+                    print("Esta empresa ya existe, verifique:")
+                elif empresa_proveedor == "":
+                    print("Este Campo no puede quedar vacio, ingrese el nombre de la empresa")
+                else:
+                    break
+            while True:
+                try:
+                    telefono_provedor = int(input("Ingrese el telefono del proveedor:   "))
+                    if telefono_provedor in self.proveedores:
+                        print("Este Telefono ya esta en uso, Intente con otro")
+                    elif telefono_provedor=="":
+                        print("Este campo no Puede quedar vacio, Ingrese el Dato")
+
+                    elif telefono_provedor<0:
+                        print("El telefono no tiene sentido")
+                    else:
+                        break
+                except ValueError:
+                    print("Solo se permiten numeros")
+            while True:
+                direccion_provedor=input("Ingrese la direccion del proveedor:         ")
+                if direccion_provedor in self.proveedores:
+                    print("Esta direccion ya esta en uso")
+                elif direccion_provedor=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            while True:
+                correo_provedor=input("Ingrese el correo del proveedor:         ")
+                if correo_provedor in self.proveedores:
+                    print("Este correo ya esta en uso")
+                elif correo_provedor=="":
+                    print("Este campo no puede quedar vacio,ingrese el dato")
+                else:
+                    break
+            while True:
+                id_categoria = input("Ingrese el código de la categoría: ")
+                if id_categoria not in self.categorias:
+                    print("La categoría no existe, primero regístrela.")
+                elif id_categoria == "":
+                    print("El campo no puede estar vacío.")
+                else:
+                    break
+            self.proveedores[id_proveedor]=Proveedores(id_proveedor,nombre_proveedor,empresa_proveedor,telefono_provedor,direccion_provedor,correo_provedor,id_categoria)
+            print("El Proveedor se agrego Correctamente...")
+
 
     def listar_categorias(self):
         if not self.categorias:
@@ -351,6 +420,14 @@ class GestionTienda:
         for em in self.empleadoss.values():
             print(f"[{em.id_empleado}] {em.nombre}  | Telefono : {em.telefono} | Direccion: {em.direccion} | correo: {em.correo}")
 
+    def listar_proveedor(self):
+        if not self.proveedores:
+            print("No hay proveedores")
+        for pr in self.proveedores.values():
+            cat = self.categorias[pr.id_categoria]
+            print(f"[{pr.id_proveedores}] {pr.nombre}  | Empresa: {pr.empresa}| Telefono : {pr.telefono} | Direccion: {pr.direccion} | correo: {pr.correo}| Categoria: {cat.nombre}")
+
+
 
 registro = GestionTienda()
 while True:
@@ -364,7 +441,8 @@ while True:
     print("7. Listar Categorias")
     print("8, Listar Clientes")
     print("9. Listar Empleados")
-    print("10. Salir")
+    print("10. Listar Proveedores")
+    print("11. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -380,7 +458,7 @@ while True:
         case 4:
             registro.ingreso_empleados()
         case 5:
-            pass
+            registro.ingreso_proverdores()
         case 6:
             registro.listar_productos()
         case 7:
@@ -390,6 +468,8 @@ while True:
         case 9:
             registro.listar_empleados()
         case 10:
+            registro.listar_proveedor()
+        case 11:
             print("Saliendo")
             break
         case _:
