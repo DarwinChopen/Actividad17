@@ -1,3 +1,4 @@
+import datetime
 class Productos:
     def __init__(self,id_producto,nombre,id_categoria,precio,total_compras,total_ventas,stock):
         self.id_producto=id_producto
@@ -69,7 +70,7 @@ class DetalleVenta:
         self.cantidad=cantidaad
         self.id_producto=id_producto
         self.precio=precio
-        self.subtotal=subtotal
+        self.subtotal=cantidaad*precio
     def mostrar_detallaVentas(self):
         print(f"Codigo Detalle de Venta: {self.id_detalleVenta}  |  Codigo Venta: {self.id_venta}  |  Cantidad: {self.cantidad}  |  Codigo Producto: {self.id_producto}  |  Precio: {self.precio}  |  Subtotal: {self.subtotal}")
 
@@ -394,6 +395,40 @@ class GestionTienda:
             self.proveedores[id_proveedor]=Proveedores(id_proveedor,nombre_proveedor,empresa_proveedor,telefono_provedor,direccion_provedor,correo_provedor,id_categoria)
             print("El Proveedor se agrego Correctamente...")
 
+    def regitrar_venta(self):
+        while True:
+            id_venta=input("Ingrese el codigo de la venta: ")
+            if id_venta in self.ventas:
+                print("Este codigo ya existe,registre otro: ")
+            elif id_venta=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
+
+        fecha_venta= datetime.datetime.now()
+
+        while True:
+            id_cliente=input("Ingrese el codigo del cliente: ")
+            if id_cliente=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
+        while True:
+            id_empleado=input("Ingrese el codigo del empleado: ")
+            if id_empleado=="":
+                print("Este campo no puede quedar vacio, ingrese dato")
+            else:
+                break
+        self.ventas[id_venta]=Ventas(id_venta,fecha_venta,id_cliente,id_empleado)
+        print("Venta Registrada")
+
+
+
+
+
+
+
+
 
     def listar_categorias(self):
         if not self.categorias:
@@ -427,6 +462,14 @@ class GestionTienda:
             cat = self.categorias[pr.id_categoria]
             print(f"[{pr.id_proveedores}] {pr.nombre}  | Empresa: {pr.empresa}| Telefono : {pr.telefono} | Direccion: {pr.direccion} | correo: {pr.correo}| Categoria: {cat.nombre}")
 
+    def listar_ventas(self):
+            if not self.ventas:
+                print("No hay ventas.")
+            else:
+                for v in self.ventas.values():
+                    cliente = self.clientes[v.id_cliente]
+                    empleado= self.empleadoss[v.id_empleado]
+                    print(f"[{v.id_venta}] Fecha: {v.fecha} | Cliente: {cliente.nombre} | Cliente: {empleado.nombre} | Total: {v.total}")
 
 
 registro = GestionTienda()
@@ -437,12 +480,14 @@ while True:
     print("3. Ingresar Clientes")
     print("4. Ingresar Empleados")
     print("5. Ingresar Proveedores")
-    print("6. Listar Productos")
-    print("7. Listar Categorias")
-    print("8, Listar Clientes")
-    print("9. Listar Empleados")
-    print("10. Listar Proveedores")
-    print("11. Salir")
+    print("6. Ingresar una venta")
+    print("7. Listar Productos")
+    print("8. Listar Categorias")
+    print("9, Listar Clientes")
+    print("10. Listar Empleados")
+    print("11. Listar Proveedores")
+    print("12. Listar Ventas")
+    print("13. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -460,16 +505,20 @@ while True:
         case 5:
             registro.ingreso_proverdores()
         case 6:
-            registro.listar_productos()
+            registro.regitrar_venta()
         case 7:
-            registro.listar_categorias()
+            registro.listar_productos()
         case 8:
-            registro.listar_clientes()
+            registro.listar_categorias()
         case 9:
-            registro.listar_empleados()
+            registro.listar_clientes()
         case 10:
-            registro.listar_proveedor()
+            registro.listar_empleados()
         case 11:
+            registro.listar_proveedor()
+        case 12:
+            registro.listar_ventas()
+        case 13:
             print("Saliendo")
             break
         case _:
