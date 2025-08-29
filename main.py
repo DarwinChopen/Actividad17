@@ -108,6 +108,7 @@ class GestionTienda:
         self.detallecompras={}
 
         self.cargar_categorias()
+        self.cargar_clientes()
 
     def cargar_categorias(self):
         try:
@@ -125,6 +126,28 @@ class GestionTienda:
         with open("categorias.txt", "w", encoding="utf-8") as archivo:
             for c in self.categorias.values():
                 archivo.write(f"{c.id_categoria}:{c.nombre}\n")
+
+    def cargar_clientes(self):
+        try:
+            with open("clientes.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        nit, nombre, telefono, direccion, correo = linea.split(":")
+                        self.clientes[nit] = Clientes(nit, nombre, telefono, direccion, correo)
+            print("Clientes importados desde clientes.txt")
+        except FileNotFoundError:
+            print("No existe el archivo clientes.txt, se creará uno nuevo al guardar.")
+
+    def guardar_clientes(self):
+        with open("clientes.txt", "w", encoding="utf-8") as archivo:
+            for cliente in self.clientes.values():
+                archivo.write(f"{cliente.nit}:{cliente.nombre}:{cliente.telefono}:{cliente.direccion}:{cliente.correo}\n")
+
+
+
+
+
 
     def ingreso_producto(self):
         while True:
@@ -292,7 +315,8 @@ class GestionTienda:
                 else:
                     break
             self.clientes[nit]=Clientes(nit,nombre_cliente,telefono_cliente,direccion_cliente,correo_cliente)
-            print("El cliente se agrego Correctamente...")
+            self.guardar_clientes()
+            print("El cliente se agrego y guardo 8Correctamente...")
 
     def ingreso_empleados(self):
         cantidad_empleados = int(input('¿Cuantos empleados desea ingresar?:     '))
@@ -594,7 +618,6 @@ while True:
         print("Ingrese un entero")
     match opcion:
         case 1:
-            print("Inpreso Productos")
             registro.ingreso_categotia()
         case 2:
             registro.ingreso_producto()
