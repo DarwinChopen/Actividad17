@@ -112,6 +112,7 @@ class GestionTienda:
         self.cargar_empleados()
         self.cargar_productos()
         self.cargar_proveedores()
+        self.cargar_ventass()
 
 
     def cargar_categorias(self):
@@ -198,6 +199,23 @@ class GestionTienda:
         with open("proveedores.txt", "w", encoding="utf-8") as archivo:
             for proveedor in self.proveedores.values():
                 archivo.write(f"{proveedor.id_proveedores}:{proveedor.nombre}:{proveedor.empresa}:{proveedor.telefono}:{proveedor.direccion}:{proveedor.correo}:{proveedor.id_categoria}\n")
+
+    def cargar_ventass(self):
+        try:
+            with open("ventas.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_venta, fecha, nit, id_empleado, total,= linea.split(":")
+                        self.ventas[id_venta] = Ventas(id_venta, nit,id_empleado, float(total))
+            print("Ventas importados desde proveedores.txt")
+        except FileNotFoundError:
+            print("No existe el archivo ventas.txt, se creará uno nuevo al guardar.")
+
+    def guardar_ventass(self):
+        with open("ventas.txt", "w", encoding="utf-8") as archivo:
+            for venta in self.ventas.values():
+                archivo.write(f"{venta.id_venta}:{venta.fecha}:{venta.nit}:{venta.id_empleado}:{venta.total}\n")
 
 
     def ingreso_producto(self):
@@ -518,8 +536,8 @@ class GestionTienda:
                 break
         total=0#aun no se calcula
         self.ventas[id_venta]=Ventas(id_venta,fecha_venta,id_cliente,id_empleado,total)
-        print("Venta Registrada")
-
+        self.guardar_ventass()
+        print("Venta Registrada, ingrese los datos")
         while True:
             id_detalleventa = input("ID Detalle Venta: ")
             id_producto = input("Ingrese el Codigo del Producto: ")
@@ -537,6 +555,8 @@ class GestionTienda:
             if opcioningreso.lower()!="s":
                 break
         self.ventas[id_venta].total=total
+        self.guardar_ventass()
+        self.guardar_productos()
         print("Venta realizada")
 
     def registrar_compras(self):#aun no funciona, decesita el detalle de compra
