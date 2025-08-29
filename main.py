@@ -107,7 +107,24 @@ class GestionTienda:
         self.compras={}
         self.detallecompras={}
 
+        self.cargar_categorias()
 
+    def cargar_categorias(self):
+        try:
+            with open("categorias.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_categoria, nombre = linea.split(":")
+                        self.categorias[id_categoria] = Categoria(id_categoria, nombre)
+            print("Categorias importados desde categorias.txt")
+        except FileNotFoundError:
+            print("No existe el archivo categorias.txt, se creará uno nuevo al guardar.")
+
+    def guardar_categorias(self):
+        with open("categorias.txt", "w", encoding="utf-8") as archivo:
+            for c in self.categorias.values():
+                archivo.write(f"{c.id_categoria}:{c.nombre}\n")
 
     def ingreso_producto(self):
         while True:
@@ -217,8 +234,8 @@ class GestionTienda:
                         else:
                             break
                     self.categorias[id_categoria]=Categoria(id_categoria, nombre)
-
-                    print(f'La categoria con codigo {id_categoria} se Agrego Correctamente')
+                    self.guardar_categorias()
+                    print(f'La categoria con codigo {id_categoria} se agrego y guaro')
                     print('\n')
                 break
             except Exception as e:
@@ -427,31 +444,13 @@ class GestionTienda:
         print("Venta Registrada")
 
         while True:
-            while True:
-                id_detalleventa=input("Ingrese el codigo del detalle de la venta: ")
-                if id_detalleventa in self.detalleVentas:
-                    print("Este codigo ya existe,registre otro: ")
-                elif id_detalleventa=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
+            id_detalleventa = input("ID Detalle Venta: ")
+            id_producto = input("Ingrese el Codigo del Producto: ")
+            if id_producto not in self.productos:
+                print("Producto no existe.")
+                continue
+            cantidad = int(input("Cantidad: "))
 
-            while True:
-                id_producto=input("Ingrese el codigo del producto: ")
-                if id_producto not in self.productos:
-                    print("El producto no existe")
-                    return
-                if id_producto=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
-
-            while True:
-                cantidad=int("Ingrese la cantidad: ")
-                if cantidad=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
             precio=self.productos[id_producto].precio
             detalle=DetalleVenta(id_detalleventa,id_venta,cantidad,id_producto,precio)
             self.detalleVentas[id_detalleventa]=detalle
@@ -460,9 +459,8 @@ class GestionTienda:
             opcioningreso=input("Desea ingresar otro producto (s/n): ")
             if opcioningreso.lower()!="s":
                 break
-        self.ventas[id_detalleventa].total=total
+        self.ventas[id_venta].total=total
         print("Venta realizada")
-
 
     def registrar_compras(self):#aun no funciona, decesita el detalle de compra
         while True:
@@ -490,45 +488,16 @@ class GestionTienda:
                 break
         total=0
         self.compras[id_compra]=Compras(id_compra,fecha_compra,id_proveedor,id_empleado,total)
-
         while True:
-            while True:
-                id_detallecompra=input("Ingrese el codigo del detalle de la compra: ")
-                if id_detallecompra in self.detalleVentas:
-                    print("Este codigo ya existe,registre otro: ")
-                elif id_detallecompra=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
+            id_detallecompra = input("ID Detalle Compra: ")
+            id_producto = input("ID Producto: ")
+            if id_producto not in self.productos:
+                print("Producto no existe.")
+                continue
+            cantidad = int(input("Cantidad: "))
+            precio_compra = float(input("Precio compra: "))
+            fecha_caducidad = input("Fecha de caducidad (YYYY-MM-DD): ")
 
-            while True:
-                id_producto=input("Ingrese el codigo del producto: ")
-                if id_producto not in self.productos:
-                    print("El producto no existe")
-                    return
-                if id_producto=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
-
-            while True:
-                cantidad=int("Ingrese la cantidad: ")
-                if cantidad=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
-            while True:
-                precio_compra=int("Ingrese el precio de compra: ")
-                if precio_compra=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
-            while True:
-                fecha_caducidad=int("Ingrese la fecha de caducidad: ")
-                if fecha_caducidad=="":
-                    print("Este campo no puede quedar vacio, ingrese dato")
-                else:
-                    break
 
             detalle=DetalleCompras(id_detallecompra,id_compra,cantidad,id_producto,precio_compra,fecha_caducidad)
             self.detallecompras[id_detallecompra]=detalle
@@ -537,13 +506,8 @@ class GestionTienda:
             opcioningreso=input("Desea ingresar otro producto (s/n): ")
             if opcioningreso.lower()!="s":
                 break
-        self.compras[id_detallecompra].total=total
+        self.compras[id_compra].total=total
         print("Compra realizada")
-
-
-
-
-
 
     def listar_categorias(self):
         if not self.categorias:
@@ -580,26 +544,27 @@ class GestionTienda:
     def listar_ventas(self):
             if not self.ventas:
                 print("No hay ventas.")
+                return
             else:
-                for v in self.ventas.values():
-                    cliente = self.clientes[v.id_cliente]
-                    empleado= self.empleadoss[v.id_empleado]
-                    print(f"[{v.id_venta}] Fecha: {v.fecha} | Cliente: {cliente.nombre} | Empleado: {empleado.nombre} | Total: {v.total}")
-                    for det in self.detalleVentas.values():
-                        if det.id_venta==v.id_venta:
-                            producto=self.productos[det.id_producto]
-                        print(f"[{det.id_detalleVenta}]  {producto.nombre}| Cantidad: {det.cantidad}* {det.precio}| = Subtotal: {det.subtotal}")
+                for venta in self.ventas.values():
+                    cliente = self.clientes[venta.nit]
+                    empleado= self.empleadoss[venta.id_empleado]
+                    print(f"[{venta.id_venta}] Fecha: {venta.fecha} | Cliente: {cliente.nombre} | Empleado: {empleado.nombre} | Total: {venta.total}")
+                    for detalle in self.detalleVentas.values():
+                        if detalle.id_venta==venta.id_venta:
+                            producto=self.productos[detalle.id_producto]
+                        print(f"[{detalle.id_detalleVenta}]  {producto.nombre}| Cantidad: {detalle.cantidad}* {detalle.precio}| = Subtotal: {detalle.subtotal}")
 
     def listar_compras(self):
             if not self.compras:
                 print("No hay compras.")
             else:
                 for comp in self.compras.values():
-                    provedor = self.compras[comp.id_proveedores]
+                    provedor = self.proveedores[comp.id_proveedores]
                     empleado= self.empleadoss[comp.id_empleado]
                     print(f"[{comp.id_venta}] Fecha: {comp.fecha} | Proveedor: {provedor.nombre} | Empleaod: {empleado.nombre} | Total: {comp.total}")
                     for det in self.detallecompras.values():
-                        if det.id_compra==comp.id_compra:
+                        if det.id_compras==comp.id_compras:
                             producto=self.productos[det.id_producto]
                             print(f"Detalle {det.id_detalleCompra}: {producto.nombre} x{det.cantidad} = {det.subtotal} (Vence: {det.fechaCaducidad})")
 
