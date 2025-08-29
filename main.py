@@ -4,10 +4,10 @@ class Productos:
         self.id_producto=id_producto
         self.nombre=nombre
         self.id_categoria=id_categoria
-        self.precio=precio
+        self.precio=float(precio)
         #self.total_compras=total_compras
         #self.total_ventas=total_ventas
-        self.stock=stock
+        self.stock=int(stock)
     def mostrar_producto(self):
         print(f"Codigo: {self.id_producto}  |  Nombre: {self.nombre}  |  Categoria: {self.id_categoria}  |  Precio: {self.precio}  |  Tootal Compras: {self.total_compras}|  Total Ventas: {self.total_ventas}")
 
@@ -111,6 +111,7 @@ class GestionTienda:
         self.cargar_clientes()
         self.cargar_empleados()
         self.cargar_productos()
+        self.cargar_proveedores()
 
 
     def cargar_categorias(self):
@@ -154,7 +155,7 @@ class GestionTienda:
                     linea = linea.strip()
                     if linea:
                         id_empleado, nombre, telefono, direccion, correo = linea.split(":")
-                        self.clientes[id_empleado] = Empleados(id_empleado, nombre, telefono, direccion, correo)
+                        self.empleadoss[id_empleado] = Empleados(id_empleado, nombre, telefono, direccion, correo)
             print("Empleados importados desde empleados.txt")
         except FileNotFoundError:
             print("No existe el archivo empleados.txt, se creará uno nuevo al guardar.")
@@ -181,8 +182,22 @@ class GestionTienda:
             for producto in self.productos.values():
                 archivo.write(f"{producto.id_producto}:{producto.nombre}:{producto.id_categoria}:{producto.precio}:{producto.stock}\n")
 
+    def cargar_proveedores(self):
+        try:
+            with open("proveedores.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_proveedores, nombre, empresa, telefono, direccion, correo, id_categoria = linea.split(":")
+                        self.proveedores[id_proveedores] = Proveedores(id_proveedores, nombre,empresa,telefono,direccion,correo, id_categoria)
+            print("Proveedores importados desde proveedores.txt")
+        except FileNotFoundError:
+            print("No existe el archivo proveedores.txt, se creará uno nuevo al guardar.")
 
-
+    def guardar_proveedores(self):
+        with open("proveedores.txt", "w", encoding="utf-8") as archivo:
+            for proveedor in self.proveedores.values():
+                archivo.write(f"{proveedor.id_proveedores}:{proveedor.nombre}:{proveedor.empresa}:{proveedor.telefono}:{proveedor.direccion}:{proveedor.correo}:{proveedor.id_categoria}\n")
 
 
     def ingreso_producto(self):
@@ -305,7 +320,7 @@ class GestionTienda:
         for i in range(cantidad_clientes):
             print(f'\t\t\t\tIngreso datos de {i + 1} clientes: ')
             while True:
-                nit = input("Ingrese el nit del cliente:           ")
+                nit = input("Ingrese el nit del cliente:                        ")
                 if nit in self.clientes:
                     print("Este nit Ya existe, Intentelo de nuevo...")
                 elif nit == "":
@@ -322,7 +337,7 @@ class GestionTienda:
                     break
             while True:
                 try:
-                    telefono_cliente = int(input("Ingrese el numero del cliente:   "))
+                    telefono_cliente = int(input("Ingrese el numero del cliente:  "))
                     if telefono_cliente in self.clientes:
                         print("Este Telefono ya esta en uso, Intente con otro")
                     elif telefono_cliente=="":
@@ -335,7 +350,7 @@ class GestionTienda:
                 except ValueError:
                     print("Solo se permiten numeros")
             while True:
-                direccion_cliente=input("Ingrese la direccion del cliente:         ")
+                direccion_cliente=input("Ingrese la direccion del cliente:          ")
                 if direccion_cliente in self.clientes:
                     print("Esta direccion ya esta en uso")
                 elif direccion_cliente=="":
@@ -343,7 +358,7 @@ class GestionTienda:
                 else:
                     break
             while True:
-                correo_cliente=input("Ingrese el correo del cliente:         ")
+                correo_cliente=input("Ingrese el correo del cliente:                 ")
                 if correo_cliente in self.clientes:
                     print("Este correo ya esta en uso")
                 elif correo_cliente=="":
@@ -352,7 +367,7 @@ class GestionTienda:
                     break
             self.clientes[nit]=Clientes(nit,nombre_cliente,telefono_cliente,direccion_cliente,correo_cliente)
             self.guardar_clientes()
-            print("El cliente se agrego y guardo 8Correctamente...")
+            print("El cliente se agrego y guardo Correctamente...")
 
     def ingreso_empleados(self):
         cantidad_empleados = int(input('¿Cuantos empleados desea ingresar?:     '))
@@ -474,9 +489,10 @@ class GestionTienda:
                 else:
                     break
             self.proveedores[id_proveedor]=Proveedores(id_proveedor,nombre_proveedor,empresa_proveedor,telefono_provedor,direccion_provedor,correo_provedor,id_categoria)
-            print("El Proveedor se agrego Correctamente...")
+            self.guardar_proveedores()
+            print("El Proveedor se agrego y guardo Correctamente...")
 
-    def regitrar_venta(self):#aun no funciona necesita el detalle de venta, error en el total
+    def regitrar_venta(self):
         while True:
             id_venta=input("Ingrese el codigo de la venta: ")
             if id_venta in self.ventas:
@@ -512,7 +528,7 @@ class GestionTienda:
                 continue
             cantidad = int(input("Cantidad: "))
 
-            precio=self.productos[id_producto].precio
+            precio=float(self.productos[id_producto].precio)
             detalle=DetalleVenta(id_detalleventa,id_venta,cantidad,id_producto,precio)
             self.detalleVentas[id_detalleventa]=detalle
             total+=detalle.subtotal
