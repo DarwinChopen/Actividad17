@@ -109,6 +109,8 @@ class GestionTienda:
 
         self.cargar_categorias()
         self.cargar_clientes()
+        self.cargar_empleados()
+
 
     def cargar_categorias(self):
         try:
@@ -143,6 +145,23 @@ class GestionTienda:
         with open("clientes.txt", "w", encoding="utf-8") as archivo:
             for cliente in self.clientes.values():
                 archivo.write(f"{cliente.nit}:{cliente.nombre}:{cliente.telefono}:{cliente.direccion}:{cliente.correo}\n")
+
+    def cargar_empleados(self):
+        try:
+            with open("empleados.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_empleado, nombre, telefono, direccion, correo = linea.split(":")
+                        self.clientes[id_empleado] = Empleados(id_empleado, nombre, telefono, direccion, correo)
+            print("Empleados importados desde empleados.txt")
+        except FileNotFoundError:
+            print("No existe el archivo empleados.txt, se creará uno nuevo al guardar.")
+
+    def guardar_empleados(self):
+        with open("empleados.txt", "w", encoding="utf-8") as archivo:
+            for empleado in self.empleadoss.values():
+                archivo.write(f"{empleado.id_empleado}:{empleado.nombre}:{empleado.telefono}:{empleado.direccion}:{empleado.correo}\n")
 
 
 
@@ -369,7 +388,8 @@ class GestionTienda:
                 else:
                     break
             self.empleadoss[id_empleado]=Empleados(id_empleado,nombre_empleado,telefono_empleado,direccion_empleado,correo_empleado)
-            print("El Empleado se agrego Correctamente...")
+            self.guardar_empleados()
+            print("El Empleado se agrego y guardo Correctamente...")
     def ingreso_proverdores(self):#falta validaciones
         cantidad_proveedores = int(input('¿Cuantos proveedores desea ingresar?:     '))
         for i in range(cantidad_proveedores):
