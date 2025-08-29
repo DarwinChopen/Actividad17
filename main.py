@@ -110,6 +110,7 @@ class GestionTienda:
         self.cargar_categorias()
         self.cargar_clientes()
         self.cargar_empleados()
+        self.cargar_productos()
 
 
     def cargar_categorias(self):
@@ -163,6 +164,22 @@ class GestionTienda:
             for empleado in self.empleadoss.values():
                 archivo.write(f"{empleado.id_empleado}:{empleado.nombre}:{empleado.telefono}:{empleado.direccion}:{empleado.correo}\n")
 
+    def cargar_productos(self):
+        try:
+            with open("productos.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_producto, nombre, id_categoria, precio, stock = linea.split(":")
+                        self.productos[id_producto] = Productos(id_producto, nombre, id_categoria, precio, stock)
+            print("Empleados importados desde productos.txt")
+        except FileNotFoundError:
+            print("No existe el archivo productos.txt, se creará uno nuevo al guardar.")
+
+    def guardar_productos(self):
+        with open("productos.txt", "w", encoding="utf-8") as archivo:
+            for producto in self.productos.values():
+                archivo.write(f"{producto.id_producto}:{producto.nombre}:{producto.id_categoria}:{producto.precio}:{producto.stock}\n")
 
 
 
@@ -246,8 +263,8 @@ class GestionTienda:
                         except ValueError:
                             print("Solo se permiten enteros")
                     self.productos[codigo]=Productos(codigo, nombre, id_categoria,precio, stock)
-
-                    print(f'El producto con codigo {codigo} se Agrego Correctamente')
+                    self.guardar_productos()
+                    print(f'El producto con codigo {codigo} se Agrego y Guardo Correctamente')
                     print('\n')
                 break  # Termina el break principal porque este bloque se ejecuto bien
             except Exception as e:
