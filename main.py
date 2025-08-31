@@ -90,9 +90,9 @@ class DetalleCompras:
         self.id_compras=id_compras
         self.cantidad=cantidad
         self.id_producto=id_producto
-        self.pecioCompra=precioCompra
-        self.subtotal=cantidad*precioCompra
+        self.precioCompra=precioCompra
         self.fechaCaducidad=fechaCaducidad
+        self.subtotal=cantidad*precioCompra
     def mostrar_detalleCompras(self):
         print(f"Codigo Detalle Compra: {self.id_detalleCompra}  |  Codigo Compras: {self.id_compras}  |  Cantidad: {self.cantidad}  |  Codigo Producto: {self.id_producto}  |  Precio Compra: {self.pecioCompra}  |  Subtotal: {self.subtotal}  |  Fecha Caducidad: {self.fechaCaducidad} ")
 class GestionTienda:
@@ -113,6 +113,9 @@ class GestionTienda:
         self.cargar_productos()
         self.cargar_proveedores()
         self.cargar_ventass()
+        self.cargar_detalleventas()
+        self.cargar_compras()
+        self.cargar_detallecompras()
 
 
     def cargar_categorias(self):
@@ -206,18 +209,69 @@ class GestionTienda:
                 for linea in archivo:
                     linea = linea.strip()
                     if linea:
-                        id_venta, fecha, nit, id_empleado, total,= linea.split(":")
-                        self.ventas[id_venta] = Ventas(id_venta, nit,id_empleado, float(total))
-            print("Ventas importados desde proveedores.txt")
+                        id_venta, fecha, nit, id_empleado, total,= linea.split("/")
+                        self.ventas[id_venta] = Ventas(id_venta,fecha, nit,id_empleado, float(total))
+            print("Ventas importados desde ventas.txt")
         except FileNotFoundError:
             print("No existe el archivo ventas.txt, se creará uno nuevo al guardar.")
 
     def guardar_ventass(self):
         with open("ventas.txt", "w", encoding="utf-8") as archivo:
             for venta in self.ventas.values():
-                archivo.write(f"{venta.id_venta}:{venta.fecha}:{venta.nit}:{venta.id_empleado}:{venta.total}\n")
+                archivo.write(f"{venta.id_venta}/{venta.fecha}/{venta.nit}/{venta.id_empleado}/{venta.total}\n")
 
+    def cargar_detalleventas(self):
+        try:
+            with open("detalleventas.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_detalleVenta, id_venta, cantidad, id_producto, precio,subtotal,= linea.split(":")
+                        self.detalleVentas[id_detalleVenta] = DetalleVenta(id_detalleVenta, id_venta,int(cantidad),id_producto, float(precio))
+                        self.detalleVentas[id_detalleVenta].subtototal=float(subtotal)
+            print("Detalles de Ventas importados desde detalleventas.txt")
+        except FileNotFoundError:
+            print("No existe el archivo detalleventas.txt, se creará uno nuevo al guardar.")
 
+    def guardar_detalleventas(self):
+        with open("detalleventas.txt", "w", encoding="utf-8") as archivo:
+            for detalle in self.detalleVentas.values():
+                archivo.write(f"{detalle.id_detalleVenta}:{detalle.id_venta}:{detalle.cantidad}:{detalle.id_producto}:{detalle.precio}:{detalle.subtotal}\n")
+
+    def cargar_compras(self):
+        try:
+            with open("Compras.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_compras, fecha, id_proveedor, id_empleado, total,= linea.split("/")
+                        self.compras[id_compras] = Compras(id_compras,fecha, id_proveedor,id_empleado, float(total))
+            print("Ventas importados desde Compras.txt")
+        except FileNotFoundError:
+            print("No existe el archivo compras.txt, se creará uno nuevo al guardar.")
+
+    def guardar_compras(self):
+        with open("Compras.txt", "w", encoding="utf-8") as archivo:
+            for compra in self.compras.values():
+                archivo.write(f"{compra.id_compras}/{compra.fecha}/{compra.id_proveedor}/{compra.id_empleado}/{compra.total}\n")
+
+    def cargar_detallecompras(self):
+        try:
+            with open("detallecompras.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_detalleCompra, id_compra, cantidad, id_producto, precioCompra,fechaCaducidad,subtotal= linea.split(":")
+                        self.detallecompras[id_detalleCompra] = DetalleCompras(id_detalleCompra, id_compra,int(cantidad),id_producto, float(precioCompra),fechaCaducidad)
+                        self.detallecompras[id_detalleCompra].subtototal=float(subtotal)
+            print("Detalles de Compras importados desde detallecompras.txt")
+        except FileNotFoundError:
+            print("No existe el archivo detallecompras.txt, se creará uno nuevo al guardar.")
+
+    def guardar_detallecompras(self):
+        with open("detallecompras.txt", "w", encoding="utf-8") as archivo:
+            for detalle in self.detallecompras.values():
+                archivo.write(f"{detalle.id_detalleCompra}:{detalle.id_compras}:{detalle.cantidad}:{detalle.id_producto}:{detalle.precioCompra}:{detalle.fechaCaducidad}:{detalle.subtotal}\n")
     def ingreso_producto(self):
         while True:
             try:
@@ -556,6 +610,7 @@ class GestionTienda:
                 break
         self.ventas[id_venta].total=total
         self.guardar_ventass()
+        self.guardar_detalleventas()
         self.guardar_productos()
         print("Venta realizada")
 
@@ -588,13 +643,12 @@ class GestionTienda:
         while True:
             id_detallecompra = input("ID Detalle Compra: ")
             id_producto = input("ID Producto: ")
+            cantidad = int(input("Cantidad: "))
             if id_producto not in self.productos:
                 print("Producto no existe.")
                 continue
-            cantidad = int(input("Cantidad: "))
             precio_compra = float(input("Precio compra: "))
             fecha_caducidad = input("Fecha de caducidad (YYYY-MM-DD): ")
-
 
             detalle=DetalleCompras(id_detallecompra,id_compra,cantidad,id_producto,precio_compra,fecha_caducidad)
             self.detallecompras[id_detallecompra]=detalle
@@ -604,7 +658,13 @@ class GestionTienda:
             if opcioningreso.lower()!="s":
                 break
         self.compras[id_compra].total=total
-        print("Compra realizada")
+        self.guardar_compras()
+        self.guardar_detallecompras()
+        self.guardar_productos()
+        print("Venta realizada")
+
+
+
 
     def listar_categorias(self):
         if not self.categorias:
@@ -650,21 +710,20 @@ class GestionTienda:
                     for detalle in self.detalleVentas.values():
                         if detalle.id_venta==venta.id_venta:
                             producto=self.productos[detalle.id_producto]
-                        print(f"[{detalle.id_detalleVenta}]  {producto.nombre}| Cantidad: {detalle.cantidad}* {detalle.precio}| = Subtotal: {detalle.subtotal}")
+                            print(f"[{detalle.id_detalleVenta}]  {producto.nombre}| Cantidad: {detalle.cantidad}* {detalle.precio}| = Subtotal: {detalle.subtotal}")
 
     def listar_compras(self):
             if not self.compras:
                 print("No hay compras.")
             else:
-                for comp in self.compras.values():
-                    provedor = self.proveedores[comp.id_proveedores]
-                    empleado= self.empleadoss[comp.id_empleado]
-                    print(f"[{comp.id_venta}] Fecha: {comp.fecha} | Proveedor: {provedor.nombre} | Empleaod: {empleado.nombre} | Total: {comp.total}")
-                    for det in self.detallecompras.values():
-                        if det.id_compras==comp.id_compras:
-                            producto=self.productos[det.id_producto]
-                            print(f"Detalle {det.id_detalleCompra}: {producto.nombre} x{det.cantidad} = {det.subtotal} (Vence: {det.fechaCaducidad})")
-
+                for compra in self.compras.values():
+                    provedor = self.proveedores[compra.id_proveedor]
+                    empleado= self.empleadoss[compra.id_empleado]
+                    print(f"[{compra.id_compras}] Fecha: {compra.fecha} | Proveedor: {provedor.nombre} | Empleaod: {empleado.nombre} | Total: {compra.total}")
+                    for detalle in self.detallecompras.values():
+                        if detalle.id_compras==compra.id_compras:
+                            producto=self.productos[detalle.id_producto]
+                            print(f"[{detalle.id_detalleCompra}]  {producto.nombre}| Cantidad: {detalle.cantidad}* {detalle.precioCompra}| = Subtotal: {detalle.subtotal}: fecha vencimiento{detalle.fechaCaducidad}")
 
 
 registro = GestionTienda()
