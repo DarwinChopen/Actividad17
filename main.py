@@ -130,6 +130,48 @@ class GestionTienda:
         self.cargar_compras()
         self.cargar_detallecompras()
 
+    def listar_CategoriasOrdenados(self):
+        if not self.categorias:
+            print("No hay Categorias aún")
+            return
+        #base erick
+        ordenado = Ordenador()
+        categorias_lista = [
+            {
+                "id_categoria":cate.id_categoria.lower(),
+                "nombre": cate.nombre.lower(),
+                "copia": cate,  # el objeto original
+            }
+            for codigo, cate in self.categorias.items()
+        ]
+        while True:
+            print("Como desea ordenar las categorias")
+            print("1. Codigo")
+            print("2. Nombre")
+            print("3. Salir")
+            try:
+                opcionOrdenar = int(input('Digite la opción: '))
+                match opcionOrdenar:
+                    case 1:
+                        ordenados_u = ordenado.quick_sort(categorias_lista, "id_categoria")
+                    case 2:
+                        ordenados_u = ordenado.quick_sort(categorias_lista, "nombre")
+                    case 3:
+                        print("Saliendoo")
+                        break
+                    case _:
+                        print('La opción no existe, por favor vuelve a intentarlo')
+                        continue
+                print("Productos ordenados")
+                for tmp in ordenados_u:
+                    cate = tmp["copia"]
+                    print(f"id_ categoria: {cate.id_categoria}| nombre: {cate.nombre}")
+                break
+            except ValueError:
+                print("Debes ingresar un número. Intenta de nuevo.")
+            except Exception as e:
+                print(f'Por favor volver a intentar, ocurrió {e}')
+
     def listar_productosOrdenados(self):
         if not self.productos:
             print("No hay productos aún")
@@ -139,11 +181,11 @@ class GestionTienda:
         productos_lista = [
             {
                 "codigo": codigo,
-                "nombre": prod.nombre,
+                "nombre": prod.nombre.lower(),
                 "id_categoria":prod.id_categoria,
                 "precio": prod.precio,
                 "stock": prod.stock,
-                "copia": prod,  # el objeto original
+                "copia": prod,
             }
             for codigo, prod in self.productos.items()
         ]
@@ -839,6 +881,8 @@ while True:
         case 15:
             registro.listar_productosOrdenados()
         case 16:
+            registro.listar_CategoriasOrdenados()
+        case 17:
             print("Saliendo")
             break
         case _:
