@@ -95,6 +95,19 @@ class DetalleCompras:
         self.subtotal=cantidad*precioCompra
     def mostrar_detalleCompras(self):
         print(f"Codigo Detalle Compra: {self.id_detalleCompra}  |  Codigo Compras: {self.id_compras}  |  Cantidad: {self.cantidad}  |  Codigo Producto: {self.id_producto}  |  Precio Compra: {self.pecioCompra}  |  Subtotal: {self.subtotal}  |  Fecha Caducidad: {self.fechaCaducidad} ")
+
+
+class Ordenador:
+    def quick_sort(self, lista, clave):
+        if len(lista) <= 1:
+            return lista
+        pivote = lista[0]
+        valor_pivote = pivote[clave]
+        inicial = [x for x in lista[1:] if x[clave] < valor_pivote]
+        medio = [x for x in lista if x[clave] == valor_pivote]
+        final = [x for x in lista[1:] if x[clave] >= valor_pivote]
+        return self.quick_sort(inicial, clave) + medio + self.quick_sort(final, clave)
+
 class GestionTienda:
     def __init__(self):
         self.productos={}
@@ -117,7 +130,53 @@ class GestionTienda:
         self.cargar_compras()
         self.cargar_detallecompras()
 
-
+    def listar_productosOrdenados(self):
+        if not self.productos:
+            print("No hay productos aún")
+            return
+        #base erick
+        ordenado = Ordenador()
+        productos_lista = [
+            {
+                "codigo": codigo,
+                "nombre": prod.nombre,
+                "id_categoria":prod.id_categoria,
+                "precio": prod.precio,
+                "stock": prod.stock,
+                "copia": prod,  # el objeto original
+            }
+            for codigo, prod in self.productos.items()
+        ]
+        while True:
+            print("Como desea ordenar los productos")
+            print("1. Nombe")
+            print("2. Precio")
+            print("3. Cantidad en stock")
+            print("4. Salir")
+            try:
+                opcionOrdenar = int(input('Digite la opción: '))
+                match opcionOrdenar:
+                    case 1:
+                        ordenados_u = ordenado.quick_sort(productos_lista, "nombre")
+                    case 2:
+                        ordenados_u = ordenado.quick_sort(productos_lista, "precio")
+                    case 3:
+                        ordenados_u = ordenado.quick_sort(productos_lista, "stock")
+                    case 4:
+                        print("Saliendoo")
+                        break
+                    case _:
+                        print('La opción no existe, por favor vuelve a intentarlo')
+                        continue
+                print("Productos ordenados")
+                for tmp in ordenados_u:
+                    prod = tmp["copia"]
+                    print(f"[{prod.id_producto}] {prod.nombre} | id_ categoria: {prod.id_categoria}| Precio: {prod.precio} | Stock: {prod.stock}")
+                break
+            except ValueError:
+                print("Debes ingresar un número. Intenta de nuevo.")
+            except Exception as e:
+                print(f'Por favor volver a intentar, ocurrió {e}')
     def cargar_categorias(self):
         try:
             with open("categorias.txt", "r", encoding="utf-8") as archivo:
@@ -778,6 +837,8 @@ while True:
         case 14:
             registro.listar_compras()
         case 15:
+            registro.listar_productosOrdenados()
+        case 16:
             print("Saliendo")
             break
         case _:
