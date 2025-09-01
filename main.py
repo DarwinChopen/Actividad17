@@ -267,6 +267,56 @@ class GestionTienda:
             except Exception as e:
                 print(f'Por favor volver a intentar, ocurrió {e}')
 
+    def listar_empleadosOrdenados(self):
+        if not self.empleadoss:
+            print("No hay Empleados aún")
+            return
+        ordenado = Ordenador()
+        empleados_lista = [
+            {
+                "id_empledo": emp.id_empleado,
+                "nombre": emp.nombre.lower(),
+                "telefono": emp.telefono,
+                "direccion": emp.direccion,
+                "correo": emp.correo,
+                "copia": emp,
+            }
+            for codigo, emp in self.empleadoss.items()
+        ]
+        while True:
+            print("Como desea ordenar a los Empleados")
+            print("1. Id Empleado")
+            print("2. Nombre")
+            print("3. Telefono")
+            print("4. Salir")
+            try:
+                opcionOrdenar = int(input('Digite la opción: '))
+                match opcionOrdenar:
+                    case 1:
+                        ordenados_u = ordenado.quick_sort(empleados_lista, "id_empleado")
+                    case 2:
+                        ordenados_u = ordenado.quick_sort(empleados_lista, "nombre")
+                    case 3:
+                        ordenados_u = ordenado.quick_sort(empleados_lista, "telefono")
+                    case 4:
+                        print("Saliendoo")
+                        break
+                    case _:
+                        print('La opción no existe, por favor vuelve a intentarlo')
+                        continue
+                print("Empleados ordenados")
+                for tmp in ordenados_u:
+                    emp = tmp["copia"]
+                    print(
+                        f"[ID Empleado: {emp.id_empleado} | Nombre: {emp.nombre} | Telefono: {emp.telefono}| Direccion: {emp.direccion} | Correo: {emp.correo}")
+                break
+            except ValueError:
+                print("Debes ingresar un número. Intenta de nuevo.")
+            except Exception as e:
+                print(f'Por favor volver a intentar, ocurrió {e}')
+
+
+
     def cargar_categorias(self):
         try:
             with open("categorias.txt", "r", encoding="utf-8") as archivo:
@@ -932,7 +982,9 @@ while True:
             registro.listar_CategoriasOrdenados()
         case 17:
             registro.listar_clientesOrdenados()
-        case 181:
+        case 18:
+            registro.listar_empleadosOrdenados()
+        case 19:
             print("Saliendo")
             break
         case _:
