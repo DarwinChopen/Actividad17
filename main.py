@@ -274,7 +274,7 @@ class GestionTienda:
         ordenado = Ordenador()
         empleados_lista = [
             {
-                "id_empledo": emp.id_empleado,
+                "id_empleado": emp.id_empleado,
                 "nombre": emp.nombre.lower(),
                 "telefono": emp.telefono,
                 "direccion": emp.direccion,
@@ -315,7 +315,54 @@ class GestionTienda:
             except Exception as e:
                 print(f'Por favor volver a intentar, ocurrió {e}')
 
-
+    def listar_proveedoresOrdenados(self):
+        if not self.proveedores:
+            print("No hay Proveedores aún")
+            return
+        ordenado = Ordenador()
+        proveedores_lista = [
+            {
+                "id_proveedores": prov.id_proveedores,
+                "nombre": prov.nombre.lower(),
+                "empresa":prov.empresa,
+                "telefono": prov.telefono,
+                "direccion": prov.direccion,
+                "correo": prov.correo,
+                "id_categoria":prov.id_categoria,
+                "copia": prov,
+            }
+            for codigo, prov in self.proveedores.items()
+        ]
+        while True:
+            print("Como desea ordenar a los Proveedores")
+            print("1. ID Proveedores")
+            print("2. Nombre")
+            print("3. Telefono")
+            print("4. Salir")
+            try:
+                opcionOrdenar = int(input('Digite la opción: '))
+                match opcionOrdenar:
+                    case 1:
+                        ordenados_u = ordenado.quick_sort(proveedores_lista, "id_proveedores")
+                    case 2:
+                        ordenados_u = ordenado.quick_sort(proveedores_lista, "nombre")
+                    case 3:
+                        ordenados_u = ordenado.quick_sort(proveedores_lista, "telefono")
+                    case 4:
+                        print("Saliendoo")
+                        break
+                    case _:
+                        print('La opción no existe, por favor vuelve a intentarlo')
+                        continue
+                print("Proveedores ordenados")
+                for tmp in ordenados_u:
+                    prov = tmp["copia"]
+                    print(f"[Codigo Proveedor: {prov.id_proveedores} | Nombre: {prov.nombre} | Empresa: {prov.empresa} | Telefono: {prov.telefono}| Direccion: {prov.direccion} | Correo: {prov.correo}")
+                break
+            except ValueError:
+                print("Debes ingresar un número. Intenta de nuevo.")
+            except Exception as e:
+                print(f'Por favor volver a intentar, ocurrió {e}')
 
     def cargar_categorias(self):
         try:
@@ -942,7 +989,12 @@ while True:
     print("12. Listar Proveedores")
     print("13. Listar Ventas")
     print("14. Listar Compras")
-    print("15. Salir")
+    print("15. Ordenar Producto")
+    print("16. Ordenar Categorias")
+    print("17. Ordenar Clientes")
+    print("18. Ordenar Empleados")
+    print("19. Ordenar Proveedores")
+    print("20. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -985,6 +1037,8 @@ while True:
         case 18:
             registro.listar_empleadosOrdenados()
         case 19:
+            registro.listar_proveedoresOrdenados()
+        case 20:
             print("Saliendo")
             break
         case _:
