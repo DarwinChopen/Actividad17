@@ -176,7 +176,6 @@ class GestionTienda:
         if not self.productos:
             print("No hay productos aún")
             return
-        #base erick
         ordenado = Ordenador()
         productos_lista = [
             {
@@ -219,6 +218,55 @@ class GestionTienda:
                 print("Debes ingresar un número. Intenta de nuevo.")
             except Exception as e:
                 print(f'Por favor volver a intentar, ocurrió {e}')
+
+    def listar_clientesOrdenados(self):
+        if not self.clientes:
+            print("No hay Clientes aún")
+            return
+        ordenado = Ordenador()
+        clientes_lista = [
+            {
+                "nit": clie.nit,
+                "nombre": clie.nombre.lower(),
+                "telefono": clie.telefono,
+                "direccion": clie.direccion,
+                "correo": clie.correo,
+                "copia": clie,
+            }
+            for codigo, clie in self.clientes.items()
+        ]
+        while True:
+            print("Como desea ordenar a los clientes")
+            print("1. Nit")
+            print("2. Nombre")
+            print("3. Telefono")
+            print("4. Salir")
+            try:
+                opcionOrdenar = int(input('Digite la opción: '))
+                match opcionOrdenar:
+                    case 1:
+                        ordenados_u = ordenado.quick_sort(clientes_lista, "nit")
+                    case 2:
+                        ordenados_u = ordenado.quick_sort(clientes_lista, "nombre")
+                    case 3:
+                        ordenados_u = ordenado.quick_sort(clientes_lista, "telefono")
+                    case 4:
+                        print("Saliendoo")
+                        break
+                    case _:
+                        print('La opción no existe, por favor vuelve a intentarlo')
+                        continue
+                print("Productos ordenados")
+                for tmp in ordenados_u:
+                    clie = tmp["copia"]
+                    print(
+                        f"[Nit {clie.nit} | Nombre: {clie.nombre} | Telefono: {clie.telefono}| Direccion: {clie.direccion} | Correo: {clie.correo}")
+                break
+            except ValueError:
+                print("Debes ingresar un número. Intenta de nuevo.")
+            except Exception as e:
+                print(f'Por favor volver a intentar, ocurrió {e}')
+
     def cargar_categorias(self):
         try:
             with open("categorias.txt", "r", encoding="utf-8") as archivo:
@@ -883,6 +931,8 @@ while True:
         case 16:
             registro.listar_CategoriasOrdenados()
         case 17:
+            registro.listar_clientesOrdenados()
+        case 181:
             print("Saliendo")
             break
         case _:
