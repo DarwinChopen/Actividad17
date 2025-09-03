@@ -692,7 +692,7 @@ class GestionTienda:
                     break
             while True:
                 nombre_cliente = input("Ingrese el Nombre del cliente: ")
-                if any(c.nombre_cliente.lower() == nombre_cliente.lower() for c in self.clientes.values()):
+                if any(c.nombre.lower() == nombre_cliente.lower() for c in self.clientes.values()):
                     print("Este Nombre en especifico ya existe, ingrese otro:")
                     continue
                 elif nombre_cliente == "":
@@ -701,8 +701,8 @@ class GestionTienda:
                 break
             while True:
                 try:
-                    telefono_cliente = int(input("Ingrese el numero del cliente: "))
-                    if any(c.telefono_cliente.lower() == telefono_cliente.lower() for c in self.clientes.values()):
+                    telefono_cliente = int(input("Ingrese el Numero del cliente: "))
+                    if any(c.telefono == telefono_cliente for c in self.clientes.values()):
                         print("Este Numero en especifico ya existe, ingrese otro:")
                         continue
                     if telefono_cliente=="":
@@ -716,7 +716,7 @@ class GestionTienda:
                 except ValueError:
                     print("Solo se permiten numeros")
             while True:
-                direccion_cliente=input("Ingrese la direccion del cliente: ")
+                direccion_cliente=input("Ingrese la Direccion del cliente: ")
                 if direccion_cliente in self.clientes:
                     print("Esta direccion ya esta en uso")
                 elif direccion_cliente=="":
@@ -724,7 +724,7 @@ class GestionTienda:
                 else:
                     break
             while True:
-                correo_cliente=input("Ingrese el correo del cliente: ")
+                correo_cliente=input("Ingrese el Correo del cliente: ")
                 if correo_cliente in self.clientes:
                     print("Este correo ya esta en uso")
                 elif correo_cliente=="":
@@ -760,7 +760,7 @@ class GestionTienda:
                     break
             while True:
                 try:
-                    telefono_empleado = int(input("Ingrese el numero del empleado: "))
+                    telefono_empleado = int(input("Ingrese el Numero del empleado: "))
                     if any(c.telefono == telefono_empleado for c in self.empleadoss.values()):
                         print("Este Numero en especifico ya existe, ingrese otro:")
                         continue
@@ -773,7 +773,7 @@ class GestionTienda:
                 except ValueError:
                     print("Solo se permiten numeros")
             while True:
-                direccion_empleado=input("Ingrese la direccion del empleado:")
+                direccion_empleado=input("Ingrese la Direccion del empleado:")
                 if direccion_empleado in self.empleadoss:
                     print("Esta direccion ya esta en uso")
                 elif direccion_empleado=="":
@@ -781,7 +781,7 @@ class GestionTienda:
                 else:
                     break
             while True:
-                correo_empleado=input("Ingrese el correo del empleado: ")
+                correo_empleado=input("Ingrese el Correo del empleado: ")
                 if correo_empleado in self.empleadoss:
                     print("Este correo ya esta en uso")
                 elif correo_empleado=="":
@@ -810,7 +810,7 @@ class GestionTienda:
                     continue
                 break
             while True:
-                empresa_proveedor = input("Ingrese la empresa del proveedor: ")
+                empresa_proveedor = input("Ingrese la Empresa del proveedor: ")
                 if empresa_proveedor == "":
                     print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
                     continue
@@ -820,7 +820,7 @@ class GestionTienda:
                 break
             while True:
                 try:
-                    telefono_provedor = int(input("Ingrese el telefono del proveedor: "))
+                    telefono_provedor = int(input("Ingrese el Telefono del proveedor: "))
                     if telefono_provedor == "":
                         print("Este Campo no puede quedar vacio, Ingrese el telefono del proveedor")
                         continue
@@ -831,7 +831,7 @@ class GestionTienda:
                 except ValueError:
                     print("Solo se permiten numeros")
             while True:
-                direccion_provedor=input("Ingrese la direccion del proveedor: ")
+                direccion_provedor=input("Ingrese la Direccion del proveedor: ")
                 if direccion_provedor in self.proveedores:
                     print("Esta direccion ya esta en uso")
                 elif direccion_provedor=="":
@@ -839,7 +839,7 @@ class GestionTienda:
                 else:
                     break
             while True:
-                correo_provedor=input("Ingrese el correo del proveedor: ")
+                correo_provedor=input("Ingrese el Correo del proveedor: ")
                 if correo_provedor == "":
                     print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
                     continue
@@ -869,11 +869,11 @@ class GestionTienda:
             print("Estos son los clientes registrados")
             for cliente in self.clientes.values():
                 print(f"  - {cliente.nit}: {cliente.nombre}")
-            id_cliente=input("Ingrese el codigo del cliente: ")
+            id_cliente=input("Ingrese el NIT del cliente: ")
             if id_cliente=="":
                 print("Este campo no puede quedar vacio, ingrese dato")
             elif id_cliente not in self.clientes:
-                print("Este codigo No existe, intentelo de nuevo")
+                print("Este NIT No existe, o aun no esta registrado en la tienda, intentelo de nuevo")
             else:
                 break
         while True:
@@ -1081,7 +1081,7 @@ class GestionTienda:
                     f"  [{d.id_detalleCompra}] {nom_prod} | Cant: {d.cantidad} x {d.precioCompra} = {d.subtotal} | Vence: {d.fechaCaducidad}")
 registro = GestionTienda()
 while True:
-    print("Menu")
+    print("----Menu Mini Market la 12----")
     print("1. Ingresar Categorias")
     print("2. Ingresar Productos")
     print("3. Ingresar Clientes")
