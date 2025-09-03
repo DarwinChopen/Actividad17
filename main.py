@@ -651,7 +651,7 @@ class GestionTienda:
     def ingreso_clientes(self):
         cantidad_clientes = int(input('¿Cuantos clientes desea ingresar al inventario?: '))
         for i in range(cantidad_clientes):
-            print(f'\t\t\t\tIngreso datos de {i + 1} clientes: ')
+            print(f'\t\t\t\tIngreso datos de Cliente: ')
             while True:
                 nit = input("Ingrese el nit del cliente: ")
                 if nit in self.clientes:
@@ -662,22 +662,25 @@ class GestionTienda:
                     break
             while True:
                 nombre_cliente = input("Ingrese el Nombre del cliente: ")
-                if nombre_cliente in self.clientes:
+                if any(c.nombre_cliente.lower() == nombre_cliente.lower() for c in self.clientes.values()):
                     print("Este Nombre en especifico ya existe, ingrese otro:")
+                    continue
                 elif nombre_cliente == "":
                     print("Este Campo no puede quedar vacio, Ingrese el nombre del cliente")
-                else:
-                    break
+                    continue
+                break
             while True:
                 try:
                     telefono_cliente = int(input("Ingrese el numero del cliente: "))
-                    if telefono_cliente in self.clientes:
-                        print("Este Telefono ya esta en uso, Intente con otro")
-                    elif telefono_cliente=="":
+                    if any(c.telefono_cliente.lower() == telefono_cliente.lower() for c in self.clientes.values()):
+                        print("Este Numero en especifico ya existe, ingrese otro:")
+                        continue
+                    if telefono_cliente=="":
                         print("Este campo no Puede quedar vacio, Ingrese el Dato")
-
-                    elif telefono_cliente<0:
+                        continue
+                    if telefono_cliente<0:
                         print("El telefono no es Valido")
+                        continue
                     else:
                         break
                 except ValueError:
@@ -700,7 +703,7 @@ class GestionTienda:
                     break
             self.clientes[nit]=Clientes(nit,nombre_cliente,telefono_cliente,direccion_cliente,correo_cliente)
             self.guardar_clientes()
-            print(f'El cliente con {nit} se agrego y guardo correctamente')
+            print(f'El cliente con nit {nit} se agrego y guardo correctamente')
             print('\n')
 
     def ingreso_empleados(self):
@@ -717,20 +720,22 @@ class GestionTienda:
                     break
             while True:
                 nombre_empleado = input("Ingrese el Nombre del empleado: ")
-                if nombre_empleado in self.empleadoss:
+                if any(c.nombre.lower() == nombre_empleado.lower() for c in self.empleadoss.values()):
                     print("Este Nombre en especifico ya existe, ingrese otro:")
-                elif nombre_empleado == "":
+                    continue
+                if nombre_empleado == "":
                     print("Este Campo no puede quedar vacio, Ingrese el nombre del empleado")
+                    continue
                 else:
                     break
             while True:
                 try:
-                    telefono_empleado = int(input("Ingrese el telefono del empleado: "))
-                    if telefono_empleado in self.empleadoss:
-                        print("Este Telefono ya esta en uso, Intente con otro")
+                    telefono_empleado = int(input("Ingrese el numero del empleado: "))
+                    if any(c.telefono == telefono_empleado for c in self.empleadoss.values()):
+                        print("Este Numero en especifico ya existe, ingrese otro:")
+                        continue
                     elif telefono_empleado=="":
                         print("Este campo no Puede quedar vacio, Ingrese el Dato")
-
                     elif telefono_empleado<0:
                         print("El telefono no es valido")
                     else:
@@ -757,46 +762,42 @@ class GestionTienda:
             self.guardar_empleados()
             print(f'El Empleado con codigo {id_empleado} se agrego y guardo correctamente')
             print('\n')
-    def ingreso_proverdores(self):#falta validaciones
+    def ingreso_proverdores(self):
+        print("Categorias disponibles: ")
+        for categoria in self.categorias.values():
+            print(f"  - {categoria.id_categoria}: {categoria.nombre}")
         cantidad_proveedores = int(input('¿Cuantos proveedores desea ingresar?: '))
         for i in range(cantidad_proveedores):
-            print(f'\t\t\t\tIngreso datos de {i + 1} preveedor: ')
-            while True:
-                id_proveedor = self.siguiente_id("Proveedor-")
-                if id_proveedor in self.proveedores:
-                    print("Este id Ya existe, Intentelo de nuevo...")
-                elif id_proveedor == "":
-                    print("El codigo no puede estar vacio, Intentelo de nuevo... ")
-                else:
-                    break
+            print(f'\t\t\t\tIngreso datos del Proveedor')
+            id_proveedor = self.siguiente_id("Proveedor-")
             while True:
                 nombre_proveedor = input("Ingrese el Nombre del proveedor: ")
-                if nombre_proveedor in self.proveedores:
-                    print("Este Nombre en especifico ya existe, ingrese otro:")
-                elif nombre_proveedor == "":
+                if nombre_proveedor == "":
                     print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
-                else:
-                    break
+                    continue
+                if any(p.nombre.lower() == nombre_proveedor.lower() for p in self.proveedores.values()):
+                    print("Este nombre ya esta en uso, ingrese otro")
+                    continue
+                break
             while True:
                 empresa_proveedor = input("Ingrese la empresa del proveedor: ")
-                if empresa_proveedor in self.proveedores:
-                    print("Esta empresa ya existe, verifique:")
-                elif empresa_proveedor == "":
-                    print("Este Campo no puede quedar vacio, ingrese el nombre de la empresa")
-                else:
-                    break
+                if empresa_proveedor == "":
+                    print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
+                    continue
+                if any(p.empresa.lower() == empresa_proveedor.lower() for p in self.proveedores.values()):
+                    print("Esta empresa ya esta registrada, ingrese otro")
+                    continue
+                break
             while True:
                 try:
                     telefono_provedor = int(input("Ingrese el telefono del proveedor: "))
-                    if telefono_provedor in self.proveedores:
-                        print("Este Telefono ya esta en uso, Intente con otro")
-                    elif telefono_provedor=="":
-                        print("Este campo no Puede quedar vacio, Ingrese el Dato")
-
-                    elif telefono_provedor<0:
-                        print("El telefono no tiene sentido")
-                    else:
-                        break
+                    if telefono_provedor == "":
+                        print("Este Campo no puede quedar vacio, Ingrese el telefono del proveedor")
+                        continue
+                    if any(p.telefono == telefono_provedor for p in self.proveedores.values()):
+                        print("Esta Telefono ya esta registrada, ingrese otro")
+                        continue
+                    break
                 except ValueError:
                     print("Solo se permiten numeros")
             while True:
@@ -809,12 +810,13 @@ class GestionTienda:
                     break
             while True:
                 correo_provedor=input("Ingrese el correo del proveedor: ")
-                if correo_provedor in self.proveedores:
-                    print("Este correo ya esta en uso")
-                elif correo_provedor=="":
-                    print("Este campo no puede quedar vacio,ingrese el dato")
-                else:
-                    break
+                if correo_provedor == "":
+                    print("Este Campo no puede quedar vacio, Ingrese el nombre del proveedor")
+                    continue
+                if any(p.correo.lower() == correo_provedor.lower() for p in self.proveedores.values()):
+                    print("Esta empresa ya esta registrada, ingrese otro")
+                    continue
+                break
             while True:
                 id_categoria = input("Ingrese el código de la categoría: ")
                 if id_categoria not in self.categorias:
@@ -830,26 +832,29 @@ class GestionTienda:
             print('\n')
 
     def regitrar_venta(self):
-        while True:
-            id_venta = self.siguiente_id("venta-")
-            if id_venta in self.ventas:
-                print("Este codigo ya existe,registre otro: ")
-            elif id_venta=="":
-                print("Este campo no puede quedar vacio, ingrese dato")
-            else:
-                break
-        fecha_venta= datetime.datetime.now()
 
+        id_venta = self.siguiente_id("venta-")
+        fecha_venta= datetime.datetime.now()
         while True:
+            print("Estos son los clientes registrados")
+            for cliente in self.clientes.values():
+                print(f"  - {cliente.nit}: {cliente.nombre}")
             id_cliente=input("Ingrese el codigo del cliente: ")
             if id_cliente=="":
                 print("Este campo no puede quedar vacio, ingrese dato")
+            elif id_cliente not in self.clientes:
+                print("Este codigo No existe, intentelo de nuevo")
             else:
                 break
         while True:
+            print("Estos son los Empleados registrados")
+            for empleado in self.empleadoss.values():
+                print(f"  - {empleado.id_empleado}: {empleado.nombre}")
             id_empleado=input("Ingrese el codigo del empleado: ")
             if id_empleado=="":
                 print("Este campo no puede quedar vacio, ingrese dato")
+            elif id_empleado not in self.empleadoss:
+                print("Este codigo No existe, intentelo de nuevo")
             else:
                 break
         total=0#aun no se calcula
@@ -858,6 +863,9 @@ class GestionTienda:
         print(f"Venta registrada con ID: {id_venta}")
         while True:
             id_detalleventa = input("ID Detalle Venta: ")
+            print("Estos son los Productos Registraso")
+            for producto in self.productos.values():
+                print(f"  - {producto.id_producto}: {producto.nombre}")
             id_producto = input("Ingrese el Codigo del Producto: ")
             if id_producto not in self.productos:
                 print("Producto no existe.")
@@ -887,27 +895,31 @@ class GestionTienda:
         print("Venta realizada")
 
     def registrar_compras(self):#aun no funciona, decesita el detalle de compra
-        while True:
-            id_compra = self.siguiente_id("compra")
-            if id_compra in self.compras:
-                print("Este codigo ya existe,registre otro: ")
-            elif id_compra=="":
-                print("Este campo no puede quedar vacio, ingrese dato")
-            else:
-                break
+        id_compra = self.siguiente_id("compra")
 
         fecha_compra= datetime.datetime.now()
 
         while True:
+            print("Estos son los Proveedores registrados")
+            for proveedor in self.proveedores.values():
+                print(f"  - {proveedor.id_proveedores}: {proveedor.nombre}")
             id_proveedor=input("Ingrese el codigo del proveedor: ")
             if id_proveedor=="":
                 print("Este campo no puede quedar vacio, ingrese dato")
+            elif id_proveedor not in self.proveedores:
+                print("Este Proveedor No existe, intentelo de nuevo")
             else:
                 break
+
         while True:
+            print("Estos son los Empleados registrados")
+            for empleado in self.empleadoss.values():
+                print(f"  - {empleado.id_empleado}: {empleado.nombre}")
             id_empleado=input("Ingrese el codigo del empleado: ")
             if id_empleado=="":
                 print("Este campo no puede quedar vacio, ingrese dato")
+            elif id_empleado not in self.empleadoss:
+                print("Este Empleado No existe, intentelo de nuevo")
             else:
                 break
         total=0
@@ -917,6 +929,9 @@ class GestionTienda:
             id_detallecompra = input("ID Detalle Compra: ")
             id_producto = input("ID Producto: ")
             cantidad = int(input("Cantidad: "))
+            print("Estos son los Productos Registrados")
+            for producto in self.productos.values():
+                print(f"  - {producto.id_producto}: {producto.nombre}")
             if id_producto not in self.productos:
                 print("Producto no existe.")
                 continue
