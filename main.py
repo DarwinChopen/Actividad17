@@ -1,4 +1,7 @@
 import datetime
+from math import trunc
+
+
 class Productos:
     def __init__(self,id_producto,nombre,id_categoria,precio,stock=0):
         self.id_producto=id_producto
@@ -105,6 +108,33 @@ class Ordenador:
         final = [x for x in lista[1:] if x[clave] >= valor_pivote]
         return self.quick_sort(inicial, clave) + medio + self.quick_sort(final, clave)
 
+
+class Administrador:
+    def __init__(self, user, password):
+        self.nombre = user
+        self.contra = password
+def validacion_admin(administradores):
+    intentos = 0
+    while intentos < 3:
+        try:
+            print(f'Esta accion requiere perfil de administrador...\nTienes {3 - intentos} intentos')
+            nombre_tmp = input('Ingrese nombre de usuario: ')
+            contra_tmp = input('Ingrese la contraseña: ')
+            for ob in administradores:
+                if ob.nombre == nombre_tmp:
+                    if ob.contra == contra_tmp:
+                        print('Bienvenido! permiso concedido')
+                        return True
+            print('Usuario o contraseña incorrecta por favor intente de nuevo')
+            print('\n')
+            intentos += 1
+
+        except Exception as e:
+            print('Error por favor ingrese un dato valido')
+    print('Intentos fallidos no tiene acceso a estas funciones')
+    return False
+admin1 = Administrador("Darwin", "Darwin123")  # Administrador creado
+administradores = [admin1]
 class GestionTienda:
     def __init__(self):
         self.productos={}
@@ -927,14 +957,14 @@ class GestionTienda:
         print(f"Compra registrada con ID: {id_compra}")
         while True:
             id_detallecompra = input("ID Detalle Compra: ")
-            id_producto = input("ID Producto: ")
-            cantidad = int(input("Cantidad: "))
             print("Estos son los Productos Registrados")
             for producto in self.productos.values():
                 print(f"  - {producto.id_producto}: {producto.nombre}")
+            id_producto = input("ID Producto: ")
             if id_producto not in self.productos:
                 print("Producto no existe.")
                 continue
+            cantidad = int(input("Cantidad: "))
             precio_compra = float(input("Precio compra: "))
             fecha_caducidad = input("Fecha de caducidad (AAAA/MM/DD): ")
 
@@ -1059,19 +1089,9 @@ while True:
     print("5. Ingresar Proveedores")
     print("6. Reaizarr una venta")
     print("7. Realizar una compra")
-    print("8. Listar Categorias")
-    print("9. Listar Productos")
-    print("10, Listar Clientes")
-    print("11. Listar Empleados")
-    print("12. Listar Proveedores")
-    print("13. Listar Ventas")
-    print("14. Listar Compras")
-    print("15. Ordenar Producto")
-    print("16. Ordenar Categorias")
-    print("17. Ordenar Clientes")
-    print("18. Ordenar Empleados")
-    print("19. Ordenar Proveedores")
-    print("20. Salir")
+    print("8. Listar")
+    print("9. Ordenar")
+    print("10. Salir")
     try:
         opcion=int(input("Ingrese una opcion"))
     except ValueError:
@@ -1090,40 +1110,72 @@ while True:
         case 6:
             registro.regitrar_venta()
         case 7:
-            registro.registrar_compras()
+            if validacion_admin(administradores):
+                registro.registrar_compras()
         case 8:
-            registro.listar_categorias()
+            while True:
+                print("1. Listar Categorias")
+                print("2. Listar Productos")
+                print("3, Listar Clientes")
+                print("4. Listar Empleados")
+                print("5. Listar Proveedores")
+                print("6. Listar Ventas")
+                print("7. Listar Compras")
+                print("8. Salir")
+                try:
+                    subop = int(input("Elige una opción: "))
+                except ValueError:
+                    print("Ingresa un número válido.")
+                    continue
+                match subop:
+                    case 1:
+                        registro.listar_categorias()
+                    case 2:
+                        registro.listar_productos()
+                    case 3:
+                        registro.listar_clientes()
+                    case 4:
+                        registro.listar_empleados()
+                    case 5:
+                        registro.listar_proveedor()
+                    case 6:
+                        registro.listar_ventas()
+                    case 7:
+                        registro.listar_compras()
+                    case 8:
+                        break
+                    case _:
+                        print("Opción inválida.")
         case 9:
-            registro.listar_productos()
+            while True:
+                print("1. Listar Categorias Ordenados")
+                print("2. Listar Productos Ordenados")
+                print("3, Listar Clientes Ordenados")
+                print("4. Listar Empleados Ordenados")
+                print("5. Listar Proveedores Ordenados")
+                print("6. Salir")
+                try:
+                    subop = int(input("Elige una opción: "))
+                except ValueError:
+                    print("Ingresa un número válido.")
+                    continue
+                match subop:
+                    case 1:
+                        registro.listar_CategoriasOrdenados()
+                    case 2:
+                        registro.listar_productosOrdenados()
+                    case 3:
+                        registro.listar_clientesOrdenados()
+                    case 4:
+                        registro.listar_empleadosOrdenados()
+                    case 5:
+                        registro.listar_proveedoresOrdenados()
+                    case 6:
+                        break
+                    case _:
+                        print("Opción inválida.")
         case 10:
-            registro.listar_clientes()
-        case 11:
-            registro.listar_empleados()
-        case 12:
-            registro.listar_proveedor()
-        case 13:
-            registro.listar_ventas()
-        case 14:
-            registro.listar_compras()
-        case 15:
-            registro.listar_productosOrdenados()
-        case 16:
-            registro.listar_CategoriasOrdenados()
-        case 17:
-            registro.listar_clientesOrdenados()
-        case 18:
-            registro.listar_empleadosOrdenados()
-        case 19:
-            registro.listar_proveedoresOrdenados()
-        case 20:
             print("Saliendo")
             break
         case _:
             print("Error, Intentelo sse nuevo")
-
-
-
-
-
-
-
