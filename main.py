@@ -557,81 +557,53 @@ class GestionTienda:
                     f"{detalle.id_producto}:{detalle.precioCompra}:{detalle.fechaCaducidad}:{detalle.subtotal}\n"
                 )
     def ingreso_producto(self):
+        if not self.categorias:
+            print("No hay categorias, Ingrese una primero")
+            return
         while True:
             try:
                 cantidad_productos = int(input('¿Cuantos productos desea ingresar al inventario?:     '))
                 for i in range(cantidad_productos):
-                    print(f'\t\t\t\tIngreso datos de {i + 1} producto: ')
-                    while True:
-                        codigo = self.siguiente_id("Producto-")
-                        if codigo in self.productos:
-                            print("Este Codigo Ya existe, Intentelo de nuevo...")
-                        elif codigo == "":
-                            print("El codigo no puede estar vacio, Intentelo de nuevo...")
-                        else:
-                            break
+                    print(f'\t\t\t\tIngreso datos de Producto ')
+                    codigo = self.siguiente_id("Producto-")
+
                     while True:
                         nombre = input("Ingrese el Nombre del Producto: ")
-                        if nombre in self.productos:
-                            print("Este Nombre en especifico ya existe, ingrese otro:")
-                        elif nombre == "":
+                        if nombre == "":
                             print("Este Campo no puede quedar vacio, Ingrese el nombre")
-                        else:
-                            break
+                            continue
+                        if any(p.nombre.lower() == nombre.lower() for p in self.productos.values()):
+                            print("Este nombre ya existe, ingrese otro.")
+                            continue
+                        break
                     while True:
                         print("\nCategorías disponibles:")
-                        for c in self.categorias.values():
-                            print(f"  - {c.id_categoria}: {c.nombre}")
+                        for categorias in self.categorias.values():
+                            print(f"  - {categorias.id_categoria}: {categorias.nombre}")
                         id_categoria = input("ID Categoría: ")
-                        if id_categoria not in self.categorias:
-                            print("La categoría no existe.")
-                            return
-                        elif id_categoria == "":
+                        if id_categoria == "":
                             print("El campo no puede estar vacío.")
-                        else:
-                            break
+                            continue
+                        if id_categoria not in self.categorias:
+                            print("La categoría no existe Ingrese una de la lista.")
+                            continue
+                        break
                     while True:
                         try:
                             precio = float(input("Ingrese el Precio en Quetzales del Producto: Q."))
                             if precio == "":
                                 print("Este campo no Puede quedar vacio, Ingrese el precio")
 
-                            elif precio < 0 and precio== 0:
+                            elif precio <=0:
                                 print("El precio no puede ser negativo ni igual a 0")
                             else:
                                 break
                         except ValueError:
                             print("Solo se permiten cantidades")
-                    """
                     while True:
                         try:
-                            total_compras = float(input("Ingrese el total compras:     Q."))
-                            if total_compras == "":
-                                print("Este campo no Puede quedar vacio, Ingrese dato")
-
-                            elif total_compras < 0:
-                                print("debe ser mayor a Q0 este no puede ser negativo ni igual a 0")
-                            else:
-                                break
-                        except ValueError:
-                            print("Solo se permiten cantidades")
-                    while True:
-                        try:
-                            total_ventas = float(input("Ingrese total ventas:     Q."))
-                            if total_ventas == "":
-                                print("Este campo no Puede quedar vacio, Ingrese el dato")
-
-                            elif total_ventas < 0:
-                                print("debe ser mayor a Q0 este no puede ser negativo ni igual a 0")
-                            else:
-                                break
-                        except ValueError:
-                            print("Solo se permiten cantidades")
-                        """
-                    while True:
-                        try:
-                            stock = int(input("Ingrese la cantidad en Stock: "))
-                            if stock < 0 and stock == 0:
+                            stock = int(input("Ingrese la cantidad Inicial en Stock(no puede ser negativo ni igual a 0): "))
+                            if stock <=0:
                                 print("Error, la cantidad en stock, no puede ser negativa y no puede ser 0")
                             else:
                                 break
@@ -644,20 +616,28 @@ class GestionTienda:
                 break
             except Exception as e:
                 print(f'Por favor ingrese datos validos, ocurrio {e}')
-
     def ingreso_categotia(self):
         while True:
             try:
                 cantidad_categorias = int(input('¿Cuantas categorias desea ingresar?: '))
                 for i in range(cantidad_categorias):
-                    print(f'\t\t\t\tIngreso datos de {i + 1} Categorias: ')
+                    print(f'\t\t\t\tIngreso datos de la Categoria')
                     id_categoria=self.siguiente_id("Categoria-")
+                    if self.categorias:
+                        print("Estas son las categorias ya registradas:")
+                        for categorias in self.categorias.values():
+                            print(f"Codigo: {categorias.id_categoria}: Nombre: {categorias.nombre}")
+                    else:
+                        print("No hay Categorias registradas...")
                     while True:
                         nombre = input("Ingrese el Nombre de la categoria: ")
                         if nombre in self.categorias:
                             print("Este Nombre en especifico ya existe, ingrese otro:")
                         elif nombre == "":
                             print("Este Campo no puede quedar vacio, Ingrese el nombre")
+                        elif any(c.nombre.lower() == nombre.lower() for c in self.categorias.values()):
+                            print("Ya existe una categoría con ese nombre, ingrese otro.")
+                            continue
                         else:
                             break
                     self.categorias[id_categoria]=Categoria(id_categoria, nombre)
